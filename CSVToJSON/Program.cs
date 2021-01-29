@@ -9,10 +9,10 @@ namespace CSVToJSON
     {
         static void Main(string[] args)
         {
-            ConvertCsvToJson(args[0]);
+            ConvertCsvToJson(args[0], args.Length > 1 ? args[1] : "OUT/");
         }
 
-        private static void ConvertCsvToJson(string originalPath)
+        private static void ConvertCsvToJson(string originalPath, string outputPath)
         {
             var paths = Directory.GetFiles(originalPath);
             if(paths.Length > 0)
@@ -58,8 +58,10 @@ namespace CSVToJSON
                     }
                     stringBuilder.Append("]");
                     Console.WriteLine(stringBuilder.ToString());
-                    var file = path;
-                    file = file.Substring(0, file.LastIndexOf('/') + 1) + "JSON/" + file.Substring(file.LastIndexOf('/') + 1);
+                    if (!Directory.Exists($"{outputPath}JSON/"))
+                        Directory.CreateDirectory($"{outputPath}JSON/");
+                    var file= $"{outputPath}JSON/{path.Substring(path.LastIndexOf('/') + 1)}";
+                        
                     file = file.Substring(0, file.LastIndexOf('.'));
                     File.WriteAllText($"{file}.json", stringBuilder.ToString());
                 }
